@@ -14,8 +14,6 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
 
-import cz.it4i.parallel.runners.HPCSettings;
-
 // TODO: Add description
 
 @Plugin(type = Service.class, priority = Priority.HIGH)
@@ -28,11 +26,7 @@ public class SimpleParallelService extends
 
 
 	public void initDemoProfile() {
-
-		HPCSettings settings = HPCSettingsGui.showDialog(getContext());
-		HPCProfile hpcProfile = new HPCProfile(HPCFSTParallizationParadigm.class,
-			LEARNATHON_DEMO_PROFILE_NAME, settings);
-		addProfile(hpcProfile);
+		commandService.run(InitDemoProfile.class, false);
 	}
 
 	@Override
