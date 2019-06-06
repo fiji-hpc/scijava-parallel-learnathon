@@ -53,7 +53,7 @@ public class HPCSettingsGui implements Command {
 	@Parameter(style = TextWidget.FIELD_STYLE, label = "Number of cpus per node")
 	private int ncpus;
 
-	@Parameter(type = ItemIO.OUTPUT)
+	@Parameter(type = ItemIO.OUTPUT, persist = false)
 	private HPCSettings settings;
 
 	@Override
