@@ -1,5 +1,6 @@
 package cz.it4i.parallel.learnathon;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -29,8 +30,13 @@ public class HPCFSTParallizationParadigm implements ParallelizationParadigm {
 
 	private HPCFSTRPCServerRunnerUI runner;
 
+	private List<CompletableFuture<?>> allFutures = new LinkedList<>();
+
 	@Override
-	public void init() {
+	public synchronized void init() {
+		if (runner != null) {
+			return;
+		}
 		runner = new HPCFSTRPCServerRunnerUI(settings);
 		runner.start();
 		innerParadigm.setHosts(Host.constructListFromNamesAndCores(runner.getPorts()
@@ -38,19 +44,33 @@ public class HPCFSTParallizationParadigm implements ParallelizationParadigm {
 				.getNCores()));
 		context.inject(innerParadigm);
 		innerParadigm.init();
-
 	}
 
 	@Override
 	public List<CompletableFuture<Map<String, Object>>> runAllAsync(
 		String commandName, List<Map<String, Object>> parameters)
 	{
-		return innerParadigm.runAllAsync(commandName, parameters);
+		return registerResultList(innerParadigm.runAllAsync(commandName,
+			parameters));
 	}
 
 	@Override
-	public void close() {
-		runner.close();
+	public synchronized void close() {
+		if (runner != null) {
+			CompletableFuture.allOf(allFutures.toArray(
+				new CompletableFuture[allFutures.size()])).join();
+			allFutures.clear();
+			runner.close();
+			runner = null;
+		}
+	}
+
+	private synchronized List<CompletableFuture<Map<String, Object>>>
+		registerResultList(
+		List<CompletableFuture<Map<String, Object>>> futures)
+	{
+		this.allFutures.addAll(futures);
+		return futures;
 	}
 
 }
