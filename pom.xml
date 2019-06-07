@@ -10,7 +10,7 @@
 		<relativePath />
 	</parent>
 	<artifactId>scijava-parallel-learnathon</artifactId>
-	<version>2019-SNAPSHOT</version>
+	<version>2019</version>
 	<name>SciJava Parallel</name>
 	<description>Additional classes for scijava-paralle used during learnathon.</description>
 	<url>https://</url>
