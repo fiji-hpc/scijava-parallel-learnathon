@@ -53,6 +53,9 @@ public class HPCSettingsGui implements Command {
 	@Parameter(style = TextWidget.FIELD_STYLE, label = "Number of cpus per node")
 	private int ncpus;
 
+	@Parameter(style = TextWidget.FIELD_STYLE, label = "Redirect standard output ")
+	private boolean redirectStdOutErr;
+
 	@Parameter(type = ItemIO.OUTPUT, persist = false)
 	private HPCSettings settings;
 
@@ -62,7 +65,7 @@ public class HPCSettingsGui implements Command {
 			userName).keyFile(keyFile).keyFilePassword(keyFilePassword)
 			.remoteDirectory(remoteDirectory).command(command).nodes(nodes).ncpus(
 				ncpus).shutdownOnClose(true).adapterType(HPCSchedulerType.getByString(
-					schedulerType)).build();
+					schedulerType)).redirectStdInErr(redirectStdOutErr).build();
 	}
 
 	public static HPCSettings showDialog(Context context) {
